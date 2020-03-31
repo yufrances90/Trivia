@@ -37,7 +37,7 @@ def create_app(test_config=None):
   for all available categories.
   '''
   @app.route('/categories')
-  def categories():
+  def get_all_categories():
 
     return jsonify({
       'categories': get_categories_in_tuples()
@@ -113,7 +113,7 @@ def create_app(test_config=None):
   of the questions list in the "List" tab.  
   '''
   @app.route('/questions', methods=["POST"])
-  def search_questions():
+  def search_questions_or_save_new_question():
 
     request_data = json.loads(request.data)
 
