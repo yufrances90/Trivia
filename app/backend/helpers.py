@@ -28,6 +28,9 @@ def get_categories_in_tuples():
 
 def get_start_and_end_nums(page):
 
+    if page is None:
+        return None
+
     start = (page - 1) * 10
     end = start + 10
 
@@ -36,13 +39,19 @@ def get_start_and_end_nums(page):
         'end': end
     }
 
-def get_formatted_questions_in_page(page):
+def get_or_search_questions(search_term):
+    
+    return  Question.query.all() if search_term is None else \
+        Question.query.filter(Question.question.contains(search_term)).all()
+
+
+def get_formatted_questions_in_page(page, search_term):
 
     pageObj = get_start_and_end_nums(page)
 
-    questions = Question.query.limit(QUESTIONS_PER_PAGE).all()
+    questions = get_or_search_questions(search_term)
 
     formatted_questions = [question.format() for question in questions]
 
-    return formatted_questions[pageObj['start']:pageObj['end']]
-
+    return formatted_questions[pageObj['start']:pageObj['end']] if page is not None \
+        else formatted_questions

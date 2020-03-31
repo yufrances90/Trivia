@@ -57,7 +57,7 @@ def create_app(test_config=None):
 
     page = request.args.get('page', 1, type=int)
 
-    questions = get_formatted_questions_in_page(page)
+    questions = get_formatted_questions_in_page(page, None)
 
     res = {
       'questions': questions,
@@ -98,6 +98,23 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+  @app.route('/questions', methods=["POST"])
+  def search_questions():
+
+    request_data = json.loads(request.data)
+
+    search_term = request_data['searchTerm']
+
+    questions = get_formatted_questions_in_page(None, search_term)
+
+    res = {
+      'questions': questions,
+      'total_questions': len(questions),
+      'categories': get_categories_in_tuples(),
+      'current_category': None
+    }
+
+    return jsonify(res)
 
   '''
   @TODO: 
