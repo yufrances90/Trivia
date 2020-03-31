@@ -14,7 +14,8 @@ from helpers import \
   get_formatted_questions_in_page, \
   get_category_by_id, \
   get_questions_by_category_id, \
-  delete_question_by_question_id
+  delete_question_by_question_id, \
+  save_question
 
 def create_app(test_config=None):
   # create and configure the app
@@ -116,18 +117,30 @@ def create_app(test_config=None):
 
     request_data = json.loads(request.data)
 
-    search_term = request_data['searchTerm']
+    if 'searchTerm' in request_data: ## search questions by user input
 
-    result = get_formatted_questions_in_page(None, search_term)
+      search_term = request_data['searchTerm']
 
-    res = {
-      'questions': result['questions'],
-      'total_questions': result['total_num'],
-      'categories': get_categories_in_tuples(),
-      'current_category': None
-    }
+      result = get_formatted_questions_in_page(None, search_term)
 
-    return jsonify(res)
+      res = {
+        'questions': result['questions'],
+        'total_questions': result['total_num'],
+        'categories': get_categories_in_tuples(),
+        'current_category': None
+      }
+
+      return jsonify(res)
+
+    else: ## insert new question
+
+      question_dict = request_data
+
+      code = save_question(question_dict)
+
+      return jsonify({
+        'success': code
+      })
 
   '''
   @TODO: 

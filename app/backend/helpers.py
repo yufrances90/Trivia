@@ -80,3 +80,19 @@ def delete_question_by_question_id(question_id):
     question.delete()
 
     return 0
+
+def save_question(question_dict):
+
+    if question_dict is None:
+        return -1
+
+    question = Question(
+        question = question_dict['question'], 
+        answer = question_dict['answer'], 
+        category = question_dict['category'], 
+        difficulty = question_dict['difficulty']
+    )
+
+    question.insert()
+
+    return 0
