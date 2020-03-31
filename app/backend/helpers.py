@@ -53,8 +53,13 @@ def get_formatted_questions_in_page(page, search_term):
 
     formatted_questions = [question.format() for question in questions]
 
-    return formatted_questions[pageObj['start']:pageObj['end']] if page is not None \
-        else formatted_questions
+    return {
+        'questions': formatted_questions[pageObj['start']:pageObj['end']] if page is not None \
+        else formatted_questions,
+        'total_num': len(formatted_questions)
+    }
+
+    return 
 
 def get_category_by_id(category_id):
     return Category.query.filter_by(id = category_id).first()
@@ -64,3 +69,14 @@ def get_questions_by_category_id(category_id):
     questions = Question.query.filter_by(category = category_id)
 
     return [question.format() for question in questions]
+
+def delete_question_by_question_id(question_id):
+
+    question = Question.query.filter(Question.id == question_id).first()
+
+    if question is None:
+        return -1
+
+    question.delete()
+
+    return 0

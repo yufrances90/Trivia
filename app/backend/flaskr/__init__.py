@@ -13,7 +13,8 @@ from helpers import \
   get_start_and_end_nums, \
   get_formatted_questions_in_page, \
   get_category_by_id, \
-  get_questions_by_category_id
+  get_questions_by_category_id, \
+  delete_question_by_question_id
 
 def create_app(test_config=None):
   # create and configure the app
@@ -59,11 +60,11 @@ def create_app(test_config=None):
 
     page = request.args.get('page', 1, type=int)
 
-    questions = get_formatted_questions_in_page(page, None)
+    result = get_formatted_questions_in_page(page, None)
 
     res = {
-      'questions': questions,
-      'total_questions': len(questions),
+      'questions': result['questions'],
+      'total_questions': result['total_num'],
       'categories': get_categories_in_tuples(),
       'current_category': None
     }
@@ -78,6 +79,16 @@ def create_app(test_config=None):
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
   '''
+  @app.route('/questions/<int:question_id>', methods=["DELETE"])
+  def delete_question_by_id(question_id):
+
+    res = delete_question_by_question_id(question_id)
+
+    return jsonify({
+      'success': 0
+    }) if res == 0 else jsonify({
+      'success': -1
+    })
 
   '''
   @TODO: 
@@ -107,11 +118,11 @@ def create_app(test_config=None):
 
     search_term = request_data['searchTerm']
 
-    questions = get_formatted_questions_in_page(None, search_term)
+    result = get_formatted_questions_in_page(None, search_term)
 
     res = {
-      'questions': questions,
-      'total_questions': len(questions),
+      'questions': result['questions'],
+      'total_questions': result['total_num'],
       'categories': get_categories_in_tuples(),
       'current_category': None
     }
