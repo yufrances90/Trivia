@@ -5,13 +5,15 @@ from flask_cors import CORS
 import random
 import json
 
-from models import setup_db, Question, Category
+from models import setup_db
 
 from helpers import \
   get_formatted_categories, \
   get_categories_in_tuples, \
   get_start_and_end_nums, \
-  get_formatted_questions_in_page
+  get_formatted_questions_in_page, \
+  get_category_by_id, \
+  get_questions_by_category_id
 
 def create_app(test_config=None):
   # create and configure the app
@@ -137,6 +139,29 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
+
+
+  '''
+    OTHER ENDPOINTS
+  '''
+
+  '''
+    Get questions by a given category id
+  '''
+  @app.route('/categories/<int:category_id>/questions')
+  def get_questions_by_category(category_id):
+
+    category = get_category_by_id(category_id + 1)
+
+    questions = get_questions_by_category_id(category_id)
+
+    res = {
+      'current_category': category.type,
+      'questions': questions,
+      'total_questions': len(questions)
+    }
+
+    return jsonify(res)
 
   '''
   @TODO: 

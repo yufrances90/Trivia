@@ -55,3 +55,12 @@ def get_formatted_questions_in_page(page, search_term):
 
     return formatted_questions[pageObj['start']:pageObj['end']] if page is not None \
         else formatted_questions
+
+def get_category_by_id(category_id):
+    return Category.query.filter_by(id = category_id).first()
+
+def get_questions_by_category_id(category_id):
+    
+    questions = Question.query.filter_by(category = category_id)
+
+    return [question.format() for question in questions]
