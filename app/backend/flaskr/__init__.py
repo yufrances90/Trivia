@@ -7,7 +7,11 @@ import json
 
 from models import setup_db, Question, Category
 
-QUESTIONS_PER_PAGE = 10
+from helpers import \
+  get_formatted_categories, \
+  get_categories_in_tuples, \
+  get_start_and_end_nums, \
+  get_formatted_questions_in_page
 
 def create_app(test_config=None):
   # create and configure the app
@@ -31,9 +35,9 @@ def create_app(test_config=None):
   @app.route('/categories')
   def categories():
 
-    categories = Category.query.all()
-
-    return jsonify([cateogry.format() for cateogry in categories])
+    return jsonify({
+      'categories': get_categories_in_tuples()
+    })
 
 
   '''
@@ -48,6 +52,22 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
+  @app.route('/questions', methods=["GET"])
+  def get_questions():
+
+    page = request.args.get('page', 1, type=int)
+
+    questions = get_formatted_questions_in_page(page)
+
+    res = {
+      'questions': questions,
+      'total_questions': len(questions),
+      'categories': get_categories_in_tuples(),
+      'current_category': None
+    }
+
+    return jsonify(res)
+
 
   '''
   @TODO: 
