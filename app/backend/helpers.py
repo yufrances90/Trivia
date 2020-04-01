@@ -58,8 +58,7 @@ def get_formatted_questions_in_page(page, search_term):
         else formatted_questions,
         'total_num': len(formatted_questions)
     }
-
-    return 
+     
 
 def get_category_by_id(category_id):
     return Category.query.filter_by(id = category_id).first()
