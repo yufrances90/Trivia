@@ -41,7 +41,7 @@ def create_app(test_config=None):
   Create an endpoint to handle GET requests 
   for all available categories.
   '''
-  @app.route('/categories')
+  @app.route('/categories', methods=["GET"])
   def get_all_categories():
 
     categories = get_categories_in_tuples()
@@ -170,6 +170,10 @@ def create_app(test_config=None):
         
         save_question(question_dict)
 
+        return jsonify({
+          'success': True
+        })
+
       except Exception as e:
         
         print(e)
@@ -186,10 +190,13 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   '''
-  @app.route('/categories/<int:category_id>/questions')
+  @app.route('/categories/<int:category_id>/questions', methods=["GET"])
   def get_questions_by_category(category_id):
 
     category = get_category_by_id(category_id + 1)
+
+    if category is None:
+      abort(404)
 
     questions = get_questions_by_category_id(category_id)
 
