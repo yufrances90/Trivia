@@ -74,12 +74,7 @@ def delete_question_by_question_id(question_id):
 
     question = Question.query.filter(Question.id == question_id).first()
 
-    if question is None:
-        return -1
-
     question.delete()
-
-    return 0
 
 def save_question(question_dict):
 

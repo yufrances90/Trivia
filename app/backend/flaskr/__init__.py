@@ -99,13 +99,15 @@ def create_app(test_config=None):
   @app.route('/questions/<int:question_id>', methods=["DELETE"])
   def delete_question_by_id(question_id):
 
-    res = delete_question_by_question_id(question_id)
+    try:
+      
+      delete_question_by_question_id(question_id)
 
-    return jsonify({
-      'success': 0
-    }) if res == 0 else jsonify({
-      'success': -1
-    })
+    except Exception as e:
+      
+      print(e)
+
+      abort(422)
 
 
   
