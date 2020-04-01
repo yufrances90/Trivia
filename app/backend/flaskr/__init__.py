@@ -161,13 +161,22 @@ def create_app(test_config=None):
 
     else: ## insert new question
 
+      if not('question' in request_data and 'answer' in request_data):
+        abort(400)
+
       question_dict = request_data
 
-      code = save_question(question_dict)
+      try:
+        
+        save_question(question_dict)
 
-      return jsonify({
-        'success': code
-      })
+      except Exception as e:
+        
+        print(e)
+
+        abort(422)
+
+      
 
   '''
   @TODO: 
@@ -225,6 +234,14 @@ def create_app(test_config=None):
       'error': 422,
       'message': 'Unprocessable entity'
     }), 422
+
+  @app.errorhandler(400)
+  def bad_request(error):
+    return jsonify({
+      'success': False,
+      'error': 400,
+      'message': 'Bad request'
+    }), 400
   
   return app
 
