@@ -103,6 +103,10 @@ def create_app(test_config=None):
       
       delete_question_by_question_id(question_id)
 
+      return jsonify({
+        'success': True
+      })
+
     except Exception as e:
       
       print(e)
@@ -141,9 +145,14 @@ def create_app(test_config=None):
 
       result = get_formatted_questions_in_page(None, search_term)
 
+      total_num_of_question = result['total_num']
+
+      if total_num_of_question == 0:
+        abort(404)
+
       res = {
         'questions': result['questions'],
-        'total_questions': result['total_num'],
+        'total_questions': total_num_of_question,
         'categories': get_categories_in_tuples(),
         'current_category': None
       }
