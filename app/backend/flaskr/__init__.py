@@ -44,8 +44,13 @@ def create_app(test_config=None):
   @app.route('/categories')
   def get_all_categories():
 
+    categories = get_categories_in_tuples()
+
+    if len(categories) == 0:
+      abort(404)
+
     return jsonify({
-      'categories': get_categories_in_tuples()
+      'categories': categories
     })
 
 
@@ -66,11 +71,17 @@ def create_app(test_config=None):
 
     page = request.args.get('page', 1, type=int)
 
+    # get paginated questions
     result = get_formatted_questions_in_page(page, None)
+
+    total_num_of_questions = result['total_num']
+
+    if total_num_of_questions == 0:
+      abort(404)
 
     res = {
       'questions': result['questions'],
-      'total_questions': result['total_num'],
+      'total_questions': total_num_of_questions,
       'categories': get_categories_in_tuples(),
       'current_category': None
     }
@@ -188,6 +199,21 @@ def create_app(test_config=None):
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      'success': False,
+      'error': 404,
+      'message': 'Resource not found'
+    }), 404
+
+  @app.errorhandler(422)
+  def unprocessable_entity(error):
+    return jsonify({
+      'success': False,
+      'error': 422,
+      'message': 'Unprocessable entity'
+    }), 422
   
   return app
 
