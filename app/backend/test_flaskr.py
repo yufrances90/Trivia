@@ -27,8 +27,12 @@ class TriviaTestCase(unittest.TestCase):
             self.db.create_all()
     
     def tearDown(self):
+
+        self.db.session.remove()
         """Executed after reach test"""
         pass
+
+        
 
     """
     TODO
@@ -54,15 +58,44 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIn('questions', data)
         self.assertIn('current_category', data)
         self.assertIsNone(data['current_category'])
-        self.assertEqual(data['total_questions'], 19)
+        self.assertTrue(data['total_questions'] == 19)
 
-    def test_404_response_beyond_valid_page(self):
+    def test_404_response_beyond_valid_page_get_questions(self):
         res = self.client().get("/questions?page=100")
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 404)
         self.assertFalse(data['success'])
         self.assertEqual(data['message'], 'Resource not found')
+
+    # uncomment the following test case when doing final testing
+    # def test_delete_question(self):
+
+    #     app = create_app()
+    #     client = app.test_client
+
+    #     question = Question.query.first()
+
+    #     res = client().delete("/questions/{}".format(question.id))
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertTrue(data['success'])
+
+    def test_422_response_invalid_question_id_delete_question(self):
+
+        app = create_app()
+        client = app.test_client
+
+        res = client().delete("/questions/100")
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertFalse(data['success'])
+
+        
+
+    # def test_422_response_nonexiste
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
