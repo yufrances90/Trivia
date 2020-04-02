@@ -93,9 +93,80 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertFalse(data['success'])
 
-        
+    def test_search_question(self):
 
-    # def test_422_response_nonexiste
+        res = self.client().post("/questions", json={'searchTerm': 'Cassius'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertIn('categories', data)
+        self.assertIn('questions', data)
+        self.assertIn('current_category', data)
+        self.assertEqual(data['total_questions'], 1)
+
+    def test_no_result_found_search_question(self):
+
+        res = self.client().post("/questions", json={'searchTerm': 'Cassius1'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertIn('categories', data)
+        self.assertIn('questions', data)
+        self.assertIn('current_category', data)
+        self.assertEqual(data['total_questions'], 0)
+
+    def test_400_response_no_parameters_save_new_question(self):
+
+        res = self.client().post("/questions", json={})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
+
+    def test_400_response_no_question_provided_save_new_question(self):
+
+        res = self.client().post("/questions", json={'answer': 'Yes'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
+
+    def test_400_response_no_answer_provided_save_new_question(self):
+
+        res = self.client().post("/questions", json={'question': '?'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
+
+    def test_422_response_no_difficulty_and_category_provided_save_new_question(self):
+
+        res = self.client().post("/questions", json={'question': '?', 'answer': 'Yes'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertFalse(data['success'])
+
+    # uncomment the following test case when doing final testing
+    # def test_save_new_question(self):
+
+    #     app = create_app()
+    #     client = app.test_client
+
+    #     res = client().post( \
+    #         "/questions", \
+    #         json={ \
+    #             'question': '?', \
+    #             'answer': 'Yes', \
+    #             'category': 1, \
+    #             'difficulty': 1 \
+    #             })
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertTrue(data['success'])
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
