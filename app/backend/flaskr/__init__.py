@@ -77,14 +77,15 @@ def create_app(test_config=None):
 
     total_num_of_questions = result['total_num']
 
-    if total_num_of_questions == 0:
+    if total_num_of_questions > 0 and len(result['questions']) == 0:
       abort(404)
 
     res = {
       'questions': result['questions'],
       'total_questions': total_num_of_questions,
       'categories': get_categories_in_tuples(),
-      'current_category': None
+      'current_category': None,
+      'success': True
     }
 
     return jsonify(res)
