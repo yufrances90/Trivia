@@ -187,6 +187,42 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIn('current_category', data)
         self.assertTrue(data['total_questions'] >= 3)
 
+    def test_get_next_question(self):
+
+        res = self.client().post("/quizzes", json={ \
+            'previous_questions': [], \
+            'quiz_category': { \
+                'type': [2, "Art"], \
+                'id': 1 \
+                }})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertIn('question', data)
+
+    def test_400_response_no_quiz_category_get_next_question(self):
+
+        res = self.client().post("/quizzes", json={ \
+            'previous_questions': []})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
+
+    def test_400_response_no_previous_questions_get_next_question(self):
+
+        res = self.client().post("/quizzes", json={ \
+            'quiz_category': { \
+                'type': [2, "Art"], \
+                'id': 1 \
+                }})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
+        
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()

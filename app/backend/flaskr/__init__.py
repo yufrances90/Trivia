@@ -230,6 +230,9 @@ def create_app(test_config=None):
 
     request_data = json.loads(request.data)
 
+    if not('quiz_category' in request_data and 'previous_questions' in request_data):
+      abort(400)
+
     quiz_category = request_data['quiz_category']
     previous_questions = request_data['previous_questions']
 
