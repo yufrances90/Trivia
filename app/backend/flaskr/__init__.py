@@ -15,7 +15,8 @@ from helpers import \
   get_category_by_id, \
   get_questions_by_category_id, \
   delete_question_by_question_id, \
-  save_question
+  save_question, \
+  retrieve_next_question
 
 def create_app(test_config=None):
   # create and configure the app
@@ -224,6 +225,20 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
+  @app.route('/quizzes', methods=["POST"])
+  def get_next_question():
+
+    request_data = json.loads(request.data)
+
+    quiz_category = request_data['quiz_category']
+    previous_questions = request_data['previous_questions']
+
+    question = retrieve_next_question(quiz_category['id'], previous_questions)
+
+    return jsonify({
+      'success': True,
+      'question': question.format() if question is not None else None
+    })
 
   '''
   @TODO: 

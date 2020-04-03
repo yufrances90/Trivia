@@ -1,5 +1,5 @@
 
-from models import Question, Category
+from models import db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
@@ -85,3 +85,12 @@ def save_question(question_dict):
     )
 
     question.insert()
+
+def retrieve_next_question(category_id, previous_questions):
+
+    question = db.session.query(Question) \
+        .filter(Question.category == category_id) \
+        .filter(Question.id.notin_(previous_questions)) \
+        .first()
+
+    return question
