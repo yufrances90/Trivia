@@ -201,6 +201,20 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['success'])
         self.assertIn('question', data)
 
+    def test_all_category_get_next_question(self):
+
+        res = self.client().post("/quizzes", json={ \
+            'previous_questions': [], \
+            'quiz_category': { \
+                'type': ["click"], \
+                'id': 0 \
+                }})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertIn('question', data)
+
     def test_400_response_no_quiz_category_get_next_question(self):
 
         res = self.client().post("/quizzes", json={ \

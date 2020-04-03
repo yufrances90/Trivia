@@ -88,9 +88,18 @@ def save_question(question_dict):
 
 def retrieve_next_question(category_id, previous_questions):
 
-    question = db.session.query(Question) \
-        .filter(Question.category == category_id) \
-        .filter(Question.id.notin_(previous_questions)) \
-        .first()
+    question = None
+
+    if category_id == 0: ## when selected category is all
+
+        question = db.session.query(Question) \
+            .filter(Question.id.notin_(previous_questions)) \
+            .first()
+    else: ## when selected category is not all
+
+        question = db.session.query(Question) \
+            .filter(Question.category == category_id) \
+            .filter(Question.id.notin_(previous_questions)) \
+            .first()
 
     return question
